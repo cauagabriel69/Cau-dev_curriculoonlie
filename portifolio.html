@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ============================================================
+       TÍTULO DA ABA DO NAVEGADOR
+       Para mudar: altere o texto entre <title> e </title>
+       ============================================================ -->
+  <title>Cauã Gabriel | Python Backend Developer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ================================================================
+       VARIÁVEIS DE COR — EDITE AQUI PARA TROCAR TODA A PALETA
+       ================================================================ */
+    :root {
+      --blue-primary:   #007BFF;
+      --blue-vibrant:   #00A8FF;
+      --blue-neon:      #38BDF8;
+      --blue-dark:      #1E3A8A;
+      --bg-primary:     #0F172A;
+      --bg-secondary:   #0D1B2E;
+      --bg-card:        #111827;
+      --text-primary:   #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted:     #64748B;
+      --border:         #1E293B;
+      --glow:           rgba(0, 123, 255, 0.35);
+      --glow-strong:    rgba(56, 189, 248, 0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-primary); border-radius: 3px; }
+
+    /* ================================================================
+       CANVAS DE PARTÍCULAS
+       ================================================================ */
+    #particles-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ================================================================
+       NAVBAR
+       ================================================================ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+    .navbar.scrolled {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--blue-neon);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: var(--text-primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--blue-primary);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--blue-neon); }
+    .nav-links a:hover::after { width: 100%; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { width: 25px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: all 0.3s; }
+
+    /* ================================================================
+       HERO
+       ================================================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+    .hero-content {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--blue-vibrant);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s 0.2s forwards;
+    }
+    .hero-tag::before { content: '// '; color: var(--text-muted); }
+    .hero-name {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s 0.4s forwards;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-role {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+      color: var(--blue-neon);
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s 0.6s forwards;
+    }
+    .hero-role::before { content: '< '; }
+    .hero-role::after  { content: ' />'; }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s 0.8s forwards;
+    }
+    .hero-desc .highlight { color: var(--blue-neon); font-weight: 600; }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeInUp 0.8s 1s forwards; }
+
+    /* ================================================================
+       BOTÕES
+       ================================================================ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-vibrant));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--glow-strong);
+      background: linear-gradient(135deg, var(--blue-vibrant), var(--blue-neon));
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--blue-neon);
+      border: 1.5px solid var(--blue-primary);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: rgba(0,123,255,0.1);
+      border-color: var(--blue-neon);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 20px var(--glow);
+    }
+
+    /* ================================================================
+       AVATAR
+       ================================================================ */
+    .hero-avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      opacity: 0;
+      animation: fadeInRight 1s 0.5s forwards;
+    }
+    .hero-avatar-glow {
+      position: absolute;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow-strong) 0%, transparent 70%);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    .hero-avatar-ring {
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 2px solid var(--blue-primary);
+      padding: 4px;
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+      position: relative;
+      box-shadow: 0 0 40px var(--glow), inset 0 0 40px rgba(0,0,0,0.5);
+    }
+    /*
+      ============================================================
+      FOTO DE PERFIL — COMO TROCAR:
+      1. Coloque sua foto na mesma pasta do index.html
+      2. Renomeie para: profile.jpg (ou .png, .webp)
+      3. Substitua o bloco <div class="avatar-placeholder">
+         por: <img src="profile.jpg" class="hero-avatar-img" alt="Cauã" />
+      ============================================================
+    */
+    .hero-avatar-img {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .avatar-placeholder {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-dark), var(--bg-card));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--blue-neon);
+      font-size: 0.75rem;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+    }
+    .avatar-placeholder i { font-size: 4rem; opacity: 0.7; }
+
+    .floating-badge {
+      position: absolute;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--blue-neon);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      white-space: nowrap;
+    }
+    .badge-python  { top: 10%;  left: -20%;  animation: float 3s ease-in-out infinite; }
+    .badge-api     { bottom: 20%; left: -25%; animation: float 3s 1s ease-in-out infinite; }
+    .badge-db      { top: 20%;  right: -20%; animation: float 3s 0.5s ease-in-out infinite; }
+    .badge-poo     { bottom: 10%; right: -18%; animation: float 3s 1.5s ease-in-out infinite; }
+
+    /* Stats */
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s 1.2s forwards;
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--blue-neon);
+      font-family: 'Fira Code', monospace;
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ================================================================
+       SEÇÕES GERAIS
+       ================================================================ */
+    section { position: relative; z-index: 1; padding: 6rem 2rem; }
+    .section-container { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--blue-vibrant);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .section-line {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--blue-primary), var(--blue-neon));
+      margin: 0 auto;
+      border-radius: 2px;
+    }
+
+    /* ================================================================
+       SOBRE
+       ================================================================ */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .about-text h3 { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.5rem; }
+    .about-text p { color: var(--text-secondary); line-height: 1.9; margin-bottom: 1.2rem; font-size: 0.98rem; }
+    .about-text .pokemon-quote {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--blue-neon);
+      border-left: 3px solid var(--blue-primary);
+      padding: 1rem 1.5rem;
+      background: rgba(0,123,255,0.05);
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+    .about-info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-icon {
+      width: 40px; height: 40px;
+      background: rgba(0,123,255,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blue-primary);
+      flex-shrink: 0;
+    }
+    .info-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.2rem; }
+    .info-value { font-size: 0.92rem; color: var(--text-primary); font-weight: 500; }
+    .info-value a { color: var(--blue-neon); text-decoration: none; transition: color 0.3s; }
+    .info-value a:hover { color: var(--blue-primary); }
+
+    /* ================================================================
+       TECNOLOGIAS
+       ================================================================ */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1.5rem;
+    }
+    .tech-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,123,255,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tech-item:hover {
+      border-color: var(--blue-primary);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px var(--glow);
+    }
+    .tech-item:hover::before { opacity: 1; }
+    .tech-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+    .tech-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); display: block; }
+    .tech-level { font-size: 0.7rem; color: var(--text-muted); font-family: 'Fira Code', monospace; margin-top: 0.25rem; display: block; }
+
+    /* ================================================================
+       PROJETOS
+       ================================================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      border-color: var(--blue-primary);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px var(--glow);
+    }
+    .project-header {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .project-header-bg { position: absolute; inset: 0; background: linear-gradient(135deg, var(--blue-dark), var(--bg-primary)); }
+    .project-icon-large { font-size: 4rem; position: relative; z-index: 1; filter: drop-shadow(0 0 20px var(--glow-strong)); }
+    .project-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .project-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(0,123,255,0.12);
+      color: var(--blue-neon);
+      border-radius: 4px;
+      border: 1px solid rgba(56,189,248,0.2);
+    }
+    .project-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .project-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; flex: 1; margin-bottom: 1.5rem; }
+    .project-links { display: flex; gap: 0.75rem; }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    .project-link.primary {
+      background: rgba(0,123,255,0.15);
+      color: var(--blue-neon);
+      border: 1px solid rgba(0,123,255,0.3);
+    }
+    .project-link.primary:hover { background: var(--blue-primary); color: #fff; }
+    .project-link.secondary { color: var(--text-muted); border: 1px solid var(--border); }
+    .project-link.secondary:hover { color: var(--blue-neon); border-color: var(--blue-primary); }
+
+    /* ================================================================
+       CONTATO
+       ================================================================ */
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .contact-info h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .contact-info p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem; font-size: 0.95rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-link-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .contact-link-item:hover {
+      border-color: var(--blue-primary);
+      background: rgba(0,123,255,0.05);
+      transform: translateX(6px);
+    }
+    .contact-link-item .link-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .contact-link-item .link-text { flex: 1; }
+    .contact-link-item .link-label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.1rem; }
+    .contact-link-item .link-value { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+    .link-whatsapp .link-icon { background: rgba(37,211,102,0.15); color: #25D366; }
+    .link-github   .link-icon { background: rgba(255,255,255,0.08); color: #fff; }
+    .link-linkedin .link-icon { background: rgba(0,119,181,0.15);   color: #0077B5; }
+    .link-email    .link-icon { background: rgba(0,123,255,0.15);   color: var(--blue-neon); }
+
+    .contact-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo { font-family: 'Fira Code', monospace; font-size: 1.2rem; color: var(--blue-neon); margin-bottom: 1rem; font-weight: 600; }
+    .footer-social { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .footer-social a {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+    .footer-social a:hover {
+      color: var(--blue-neon);
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 15px var(--glow);
+      transform: translateY(-3px);
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-vibrant));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      z-index: 999;
+      transition: all 0.3s;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 4px 20px var(--glow);
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: all; }
+    .back-to-top:hover { transform: translateY(-4px); box-shadow: 0 8px 25px var(--glow-strong); }
+
+    /* ================================================================
+       ANIMAÇÕES
+       ================================================================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1);    opacity: 0.5; }
+      50%       { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ================================================================
+       RESPONSIVIDADE
+       ================================================================ */
+    @media (max-width: 900px) {
+      .hero-content   { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+      .hero-desc      { margin: 0 auto 2.5rem; }
+      .hero-buttons   { justify-content: center; }
+      .hero-stats     { justify-content: center; }
+      .hero-avatar-wrapper { order: -1; }
+      .badge-python, .badge-api, .badge-db, .badge-poo { display: none; }
+      .about-grid     { grid-template-columns: 1fr; }
+      .contact-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(15,23,42,0.98);
+        backdrop-filter: blur(20px);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        gap: 1.2rem;
+      }
+      .hamburger { display: flex; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-avatar-ring { width: 220px; height: 220px; }
+      .hero-avatar-glow { width: 260px; height: 260px; }
+    }
+    @media (max-width: 480px) {
+      section { padding: 4rem 1.5rem; }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { gap: 1.5rem; }
+      .contact-form { padding: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- ================================================================
+     NAVBAR
+     ================================================================ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="#home" class="nav-logo">&lt;<span>Cauã</span> /&gt;</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#tecnologias">Tecnologias</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<section id="home" class="hero">
+  <div class="hero-content">
+
+    <div class="hero-text">
+      <div class="hero-tag">backend_developer.py</div>
+
+      <h1 class="hero-name">
+        Olá, eu sou<br />
+        <span class="gradient-text">Cauã Gabriel</span>
+      </h1>
+
+      <p class="hero-role">Python Backend Developer</p>
+
+      <p class="hero-desc">
+        Construo sistemas robustos e escaláveis como um
+        <span class="highlight">Mestre Pokémon</span> monta sua equipe —
+        cada serviço no lugar certo, cada <span class="highlight">API</span>
+        poderosa e preparada para o combate.
+        Focado em <span class="highlight">Python</span>,
+        <span class="highlight">APIs REST</span> e
+        <span class="highlight">POO</span>.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#projetos" class="btn-primary">
+          <i class="fas fa-code"></i> Ver Projetos
+        </a>
+        <!--
+          CURRÍCULO: arquivo curriculo.pdf já está na mesma pasta.
+          Para trocar: substitua o arquivo curriculo.pdf por um novo com o mesmo nome.
+          Para mudar o texto do botão: edite abaixo.
+        -->
+        <a href="curriculo.pdf" class="btn-outline" download="Caua_Gabriel_Curriculo.pdf">
+          <i class="fas fa-download"></i> Baixar Currículo
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number" data-target="5">0</span>
+          <span class="stat-label">Projetos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="6">0</span>
+          <span class="stat-label">Tecnologias</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="6">0</span>
+          <span class="stat-label">Meses de exp.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVATAR -->
+    <div class="hero-avatar-wrapper">
+      <div class="hero-avatar-glow"></div>
+      <div class="hero-avatar-ring">
+        <!--
+          COMO TROCAR A FOTO:
+          1. Coloque sua foto na mesma pasta: profile.jpg
+          2. Substitua o bloco avatar-placeholder por:
+             <img src="profile.jpg" class="hero-avatar-img" alt="Cauã Gabriel" />
+        -->
+        <img src="profile.jpg" class="hero-avatar-img" alt="Cauã Gabriel" />
+      </div>
+      <span class="floating-badge badge-python">🐍 Python</span>
+      <span class="floating-badge badge-api">⚡ FastAPI</span>
+      <span class="floating-badge badge-db">🔗 APIs REST</span>
+      <span class="floating-badge badge-poo">🧩 POO</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     SOBRE
+     ================================================================ -->
+<section id="sobre">
+  <div class="section-container">
+
+    <div class="section-header reveal">
+      <span class="section-tag">// 01. sobre_mim.py</span>
+      <h2 class="section-title">Sobre <span class="gradient-text">Mim</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="about-grid">
+
+      <div class="about-text reveal">
+        <h3>Backend Developer apaixonado por sistemas que realmente funcionam.</h3>
+
+        <blockquote class="pokemon-quote">
+          "Assim como um Mestre Pokémon conhece cada habilidade da sua equipe,
+           eu conheço cada camada do meu stack — do banco de dados até o endpoint final."
+        </blockquote>
+
+        <p>
+          Sou desenvolvedor Back-end em início de carreira, com aproximadamente
+          <strong>6 meses de experiência prática</strong> em projetos próprios.
+          Apaixonado por tecnologia e resolução de problemas, tenho base sólida em
+          <strong>Python</strong>, desenvolvimento de APIs com <strong>Flask</strong> e
+          <strong>Programação Orientada a Objetos</strong>.
+        </p>
+        <p>
+          Estou cursando <strong>Engenharia da Computação</strong> na Afya Faculdade de
+          Ciências Médicas (Montes Claros, MG) e em busca da minha primeira oportunidade
+          profissional para crescer, aprender com times experientes e contribuir com
+          soluções de qualidade.
+        </p>
+        <p>
+          Quando não estou codando, estou estudando novos padrões de arquitetura backend,
+          consumindo APIs externas e pensando em como automatizar o que ainda é manual —
+          como um bom treinador Pokémon preparando a equipe para o próximo combate.
+        </p>
+
+        <div class="hero-buttons" style="margin-top:1.5rem;">
+          <a href="#contato" class="btn-primary">
+            <i class="fas fa-paper-plane"></i> Entre em Contato
+          </a>
+          <a href="#projetos" class="btn-outline">
+            <i class="fas fa-folder-open"></i> Meus Projetos
+          </a>
+        </div>
+      </div>
+
+      <!-- INFORMAÇÕES PESSOAIS -->
+      <div class="about-info-card reveal">
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fas fa-user"></i></div>
+          <div>
+            <span class="info-label">Nome</span>
+            <span class="info-value">Cauã Gabriel Fernandes Rocha</span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <span class="info-label">Email</span>
+            <span class="info-value">
+              <a href="mailto:rcaua575@gmail.com">rcaua575@gmail.com</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
+          <div>
+            <span class="info-label">WhatsApp</span>
+            <span class="info-value">
+              <a href="https://wa.me/5538998120052" target="_blank">(38) 99812-0052</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fab fa-github"></i></div>
+          <div>
+            <span class="info-label">GitHub</span>
+            <span class="info-value">
+              <a href="https://github.com/cauagabriel69" target="_blank">github.com/cauagabriel69</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fab fa-linkedin"></i></div>
+          <div>
+            <span class="info-label">LinkedIn</span>
+            <span class="info-value">
+              <a href="https://www.linkedin.com/in/cau%C3%A3gabrielfernandesrocha/" target="_blank">linkedin.com/in/cauãgabriel</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fas fa-graduation-cap"></i></div>
+          <div>
+            <span class="info-label">Formação</span>
+            <span class="info-value">Eng. da Computação — Afya MG</span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <span class="info-label">Localidade</span>
+            <span class="info-value">Montes Claros, Minas Gerais 🇧🇷</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     TECNOLOGIAS
+     Tecnologias atuais: Python, Flask, APIs REST, POO, Git/GitHub, Integração de APIs
+     Para adicionar: copie um .tech-item e ajuste
+     Para remover: delete o bloco .tech-item
+     ================================================================ -->
+<section id="tecnologias" style="background: rgba(0,0,0,0.2);">
+  <div class="section-container">
+
+    <div class="section-header reveal">
+      <span class="section-tag">// 02. tech_stack.json</span>
+      <h2 class="section-title">Minhas <span class="gradient-text">Tecnologias</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="tech-grid">
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">🐍</span>
+        <span class="tech-name">Python</span>
+        <span class="tech-level">Principal</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">🌶️</span>
+        <span class="tech-name">Flask</span>
+        <span class="tech-level">Avançado</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">🔗</span>
+        <span class="tech-name">APIs REST</span>
+        <span class="tech-level">Avançado</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">🧩</span>
+        <span class="tech-name">POO</span>
+        <span class="tech-level">Avançado</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon" style="font-size:2rem; padding-top:0.2rem;">
+          <i class="fab fa-git-alt" style="color:#F05032;"></i>
+        </span>
+        <span class="tech-name">Git / GitHub</span>
+        <span class="tech-level">Intermediário</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">🤖</span>
+        <span class="tech-name">Integração de APIs</span>
+        <span class="tech-level">Intermediário</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">📊</span>
+        <span class="tech-name">SQL</span>
+        <span class="tech-level">Básico</span>
+      </div>
+
+      <div class="tech-item reveal">
+        <span class="tech-icon">📦</span>
+        <span class="tech-name">Manipulação de Dados</span>
+        <span class="tech-level">Intermediário</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     PROJETOS
+     Projetos baseados no GitHub: github.com/cauagabriel69
+     Para adicionar: copie um .project-card e ajuste
+     Para remover: delete o bloco .project-card
+     ================================================================ -->
+<section id="projetos">
+  <div class="section-container">
+
+    <div class="section-header reveal">
+      <span class="section-tag">// 03. projects.py</span>
+      <h2 class="section-title">Meus <span class="gradient-text">Projetos</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- PROJETO 1 — Sistema Bancário (do currículo) -->
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-header-bg"></div>
+          <span class="project-icon-large">🏦</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">POO</span>
+            <span class="project-tag">CLI</span>
+          </div>
+          <h3 class="project-title">Sistema Bancário em Python</h3>
+          <p class="project-desc">
+            Aplicação de linha de comando que simula operações bancárias completas —
+            depósito, saque, transferência entre contas e histórico detalhado de transações.
+            Estruturado com foco em POO, separação de responsabilidades e validação de entradas.
+          </p>
+          <div class="project-links">
+            <a href="https://github.com/cauagabriel69" target="_blank" class="project-link primary">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJETO 2 — API Flask -->
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-header-bg" style="background: linear-gradient(135deg, #0D1B2E, #1a2a4a);"></div>
+          <span class="project-icon-large">🌶️</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Flask</span>
+            <span class="project-tag">REST API</span>
+          </div>
+          <h3 class="project-title">API REST com Flask</h3>
+          <p class="project-desc">
+            API backend desenvolvida com Flask, estruturada com boas práticas de
+            desenvolvimento: rotas organizadas, validação de dados, tratamento de erros
+            e retorno padronizado em JSON.
+          </p>
+          <div class="project-links">
+            <a href="https://github.com/cauagabriel69" target="_blank" class="project-link primary">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJETO 3 — Integração de APIs -->
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-header-bg" style="background: linear-gradient(135deg, #0a1628, #0D2137);"></div>
+          <span class="project-icon-large">🔗</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">APIs</span>
+            <span class="project-tag">Integração</span>
+          </div>
+          <h3 class="project-title">Integração de APIs Externas</h3>
+          <p class="project-desc">
+            Projeto Python que consome APIs externas, processa e normaliza os dados
+            recebidos, aplicando regras de negócio e manipulação de dados estruturados.
+            Foco em resiliência e boas práticas de consumo de APIs.
+          </p>
+          <div class="project-links">
+            <a href="https://github.com/cauagabriel69" target="_blank" class="project-link primary">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJETO 4 — Automação Python -->
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-header-bg" style="background: linear-gradient(135deg, #0F172A, #0a2040);"></div>
+          <span class="project-icon-large">🤖</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Automação</span>
+            <span class="project-tag">Scripts</span>
+          </div>
+          <h3 class="project-title">Automação com Python</h3>
+          <p class="project-desc">
+            Scripts Python para automação de tarefas repetitivas, manipulação de arquivos,
+            geração de relatórios e processamento de dados em lote.
+            Foco em produtividade e redução de trabalho manual.
+          </p>
+          <div class="project-links">
+            <a href="https://github.com/cauagabriel69" target="_blank" class="project-link primary">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: Ver todos os projetos no GitHub -->
+      <div class="project-card reveal" style="border: 1.5px dashed var(--blue-primary); background: rgba(0,123,255,0.03); align-items:center; justify-content:center;">
+        <div class="project-body" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; padding: 3rem 2rem;">
+          <span style="font-size:3rem;">👾</span>
+          <h3 class="project-title">Mais projetos no GitHub</h3>
+          <p class="project-desc" style="text-align:center;">
+            Todos os repositórios com código-fonte comentado e documentação estão disponíveis
+            publicamente no meu GitHub.
+          </p>
+          <a href="https://github.com/cauagabriel69" target="_blank" class="btn-primary">
+            <i class="fab fa-github"></i> Ver todos no GitHub
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     CONTATO
+     ================================================================ -->
+<section id="contato" style="background: rgba(0,0,0,0.2);">
+  <div class="section-container">
+
+    <div class="section-header reveal">
+      <span class="section-tag">// 04. contato.py</span>
+      <h2 class="section-title">Entre em <span class="gradient-text">Contato</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="contact-wrapper">
+
+      <div class="contact-info reveal">
+        <h3>Vamos construir algo <span class="gradient-text">incrível</span> juntos?</h3>
+        <p>
+          Estou disponível para freelances, oportunidades CLT/PJ e colaborações.
+          Se você tem um projeto backend ou uma vaga que combina, me chama!
+          Respondo rápido no WhatsApp. 🚀
+        </p>
+
+        <div class="contact-links">
+
+          <!-- WHATSAPP -->
+          <a href="https://wa.me/5538998120052?text=Olá%20Cauã!%20Vi%20seu%20portfólio%20e%20gostaria%20de%20conversar."
+             target="_blank" class="contact-link-item link-whatsapp">
+            <div class="link-icon"><i class="fab fa-whatsapp"></i></div>
+            <div class="link-text">
+              <span class="link-label">WhatsApp</span>
+              <span class="link-value">(38) 99812-0052</span>
+            </div>
+            <i class="fas fa-arrow-right" style="color:var(--text-muted);"></i>
+          </a>
+
+          <!-- GITHUB -->
+          <a href="https://github.com/cauagabriel69" target="_blank" class="contact-link-item link-github">
+            <div class="link-icon"><i class="fab fa-github"></i></div>
+            <div class="link-text">
+              <span class="link-label">GitHub</span>
+              <span class="link-value">github.com/cauagabriel69</span>
+            </div>
+            <i class="fas fa-arrow-right" style="color:var(--text-muted);"></i>
+          </a>
+
+          <!-- LINKEDIN -->
+          <a href="https://www.linkedin.com/in/cau%C3%A3gabrielfernandesrocha/" target="_blank" class="contact-link-item link-linkedin">
+            <div class="link-icon"><i class="fab fa-linkedin-in"></i></div>
+            <div class="link-text">
+              <span class="link-label">LinkedIn</span>
+              <span class="link-value">Cauã Gabriel Fernandes Rocha</span>
+            </div>
+            <i class="fas fa-arrow-right" style="color:var(--text-muted);"></i>
+          </a>
+
+          <!-- EMAIL -->
+          <a href="mailto:rcaua575@gmail.com" class="contact-link-item link-email">
+            <div class="link-icon"><i class="fas fa-envelope"></i></div>
+            <div class="link-text">
+              <span class="link-label">Email</span>
+              <span class="link-value">rcaua575@gmail.com</span>
+            </div>
+            <i class="fas fa-arrow-right" style="color:var(--text-muted);"></i>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- FORMULÁRIO -->
+      <div class="contact-form reveal">
+        <div class="form-group">
+          <label for="name">Seu Nome</label>
+          <input type="text" id="name" placeholder="Ex: João Silva" />
+        </div>
+        <div class="form-group">
+          <label for="email">Seu Email</label>
+          <input type="email" id="email" placeholder="Ex: joao@empresa.com" />
+        </div>
+        <div class="form-group">
+          <label for="subject">Assunto</label>
+          <input type="text" id="subject" placeholder="Ex: Proposta de Freelance" />
+        </div>
+        <div class="form-group">
+          <label for="message">Mensagem</label>
+          <textarea id="message" placeholder="Olá Cauã! Tenho um projeto backend e..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%; justify-content:center;" onclick="sendEmail()">
+          <i class="fas fa-paper-plane"></i> Enviar Mensagem
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+  <div class="footer-logo">&lt; Cauã Gabriel /&gt;</div>
+  <div class="footer-social">
+    <a href="https://github.com/cauagabriel69" target="_blank" title="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/cau%C3%A3gabrielfernandesrocha/" target="_blank" title="LinkedIn">
+      <i class="fab fa-linkedin-in"></i>
+    </a>
+    <a href="https://wa.me/5538998120052" target="_blank" title="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="mailto:rcaua575@gmail.com" title="Email">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+  <p class="footer-copy">
+    Desenvolvido com <span style="color:var(--blue-neon)">♥</span>
+    por <strong>Cauã Gabriel</strong> &mdash; Python Backend Developer<br/>
+    <span style="font-family:'Fira Code',monospace; font-size:0.78rem; color:var(--text-muted);">
+      # feito com Python mindset 🐍 | Montes Claros, MG
+    </span>
+  </p>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Voltar ao topo" onclick="scrollToTop()">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ================================================================
+     JAVASCRIPT
+     ================================================================ -->
+<script>
+  /* PARTÍCULAS */
+  const canvas  = document.getElementById('particles-canvas');
+  const ctx     = canvas.getContext('2d');
+  let particles = [];
+
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function createParticles() {
+    particles = [];
+    const count = Math.floor((canvas.width * canvas.height) / 15000);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 0.5,
+        color: Math.random() > 0.6
+          ? 'rgba(56,189,248,0.6)'
+          : Math.random() > 0.5
+            ? 'rgba(0,123,255,0.5)'
+            : 'rgba(255,255,255,0.2)'
+      });
+    }
+  }
+  createParticles();
+  window.addEventListener('resize', createParticles);
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,123,255,${0.15 * (1 - dist / 100)})`;
+          ctx.lineWidth = 0.5;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  /* NAVBAR */
+  const navbar    = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('nav-links');
+
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    document.getElementById('backToTop').classList.toggle('visible', window.scrollY > 400);
+  });
+
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  /* SCROLL REVEAL */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* CONTADOR STATS */
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = Math.ceil(target / 30);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = current + '+';
+    }, 50);
+  }
+  const statsObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-number').forEach(animateCounter);
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) statsObserver.observe(heroStats);
+
+  /* VOLTAR AO TOPO */
+  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+  /* FORMULÁRIO */
+  function sendEmail() {
+    const name    = document.getElementById('name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+    if (!name || !email || !message) { alert('Por favor, preencha nome, email e mensagem!'); return; }
+    const mailto = `mailto:rcaua575@gmail.com?subject=${encodeURIComponent(subject || 'Contato via Portfólio')}&body=${encodeURIComponent(`Nome: ${name}\nEmail: ${email}\n\n${message}`)}`;
+    window.location.href = mailto;
+  }
+
+  /* NAVBAR ATIVA por seção */
+  const sections = document.querySelectorAll('section[id]');
+  const navItems  = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+    navItems.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--blue-neon)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>
